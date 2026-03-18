@@ -1,0 +1,6 @@
+# Ignore local confidential config files
+config.js
+.env
+
+# Ignore any local-only helpers or data
+local/
