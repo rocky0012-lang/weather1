@@ -4,4 +4,5 @@
 // Example: const apiKey = "your_openweathermap_api_key_here";
 // The app expects a global `apiKey` variable.
 
-const apiKey = "YOUR_API_KEY_HERE";
+const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+
