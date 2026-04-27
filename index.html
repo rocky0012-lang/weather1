@@ -39,30 +39,35 @@
             </div>
         </div>
     </div>
-    <script src="local/config.js"></script>
     <script>
-        const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-
-        if (typeof apiKey === "undefined" || !apiKey || apiKey === "YOUR_API_KEY_HERE") {
-            console.warn("No API key set. Copy config.example.js to local/config.js and set apiKey.");
-        }
-
         const searchBox = document.querySelector(".search input");
         const searchBtn = document.querySelector(".search button");
         const weatherIcon = document.querySelector(".weather-icon");
+        const apiBase = window.location.port === "5500" ? "http://localhost:3000" : "";
 
         async function checkfunction(city) {
-            if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
-                alert("Please set your OpenWeatherMap API key in local/config.js.");
+            const trimmedCity = city.trim();
+            if (!trimmedCity) {
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".Weather").style.display = "none";
                 return;
             }
 
-            const response = await fetch(apiurl + city + `&appid=${apiKey}`);
-            const data = await response.json();
+            const response = await fetch(`${apiBase}/api/weather?city=${encodeURIComponent(trimmedCity)}`);
 
-            // Handle API errors (invalid key, rate limit, city not found, etc.)
+            let data = null;
+            const contentType = response.headers.get("content-type") || "";
+            if (contentType.includes("application/json")) {
+                data = await response.json();
+            }
+
             if (!response.ok) {
-                console.warn("Weather API error", response.status, data);
+              document.querySelector(".error").style.display = "block";
+              document.querySelector(".Weather").style.display = "none";
+              return;
+            }
+
+            if (!data) {
                 document.querySelector(".error").style.display = "block";
                 document.querySelector(".Weather").style.display = "none";
                 return;
@@ -92,13 +97,16 @@
             document.querySelector(".Weather").style.display = "block";
             document.querySelector(".error").style.display = "none";
         }
-            
-           
-        
 
         searchBtn.addEventListener("click", ()=>{
             checkfunction(searchBox.value);
-        })
+        });
+
+        searchBox.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                checkfunction(searchBox.value);
+            }
+        });
         
     </script>
 </body>

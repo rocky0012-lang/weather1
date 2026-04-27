@@ -1,6 +1,8 @@
-# Ignore local confidential config files
+# Ignore local config
 config.js
-.env
-
-# Ignore any local-only helpers or data
+local/config.js
 local/
+
+# Ignore all environment files
+.env
+.env.local

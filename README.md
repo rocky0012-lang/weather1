@@ -2,28 +2,39 @@
 
 ## Keeping API keys private
 
-This project uses an OpenWeatherMap API key. **Do not commit real API keys to source control.**
+This project uses an OpenWeatherMap API key through a server-side endpoint in `api/weather.js`. **Do not commit real API keys to source control.**
 
 ### Setup (local only)
 
-1. Copy `config.example.js` to `local/config.js`:
+1. Add a `.env.local` file in the project root:
 
 ```bash
-cp config.example.js local/config.js
+WEATHER_API_KEY=YOUR_API_KEY_HERE
 ```
 
-2. Open `local/config.js` and replace `YOUR_API_KEY_HERE` with your real API key.
+2. Start the local server:
+
+```bash
+node server.js
+```
+
+3. Open `http://localhost:3000` in your browser.
+
+### Why you saw 404 on 127.0.0.1:5500
+
+`Live Server` serves static files only. It does not execute backend code in `api/weather.js`, so `/api/weather` returns 404 there. Use `node server.js` (or Vercel dev/deploy) so the `/api/weather` route exists.
 
 ### How it works
 
-- `index.html` loads `local/config.js` first, which defines a global `apiKey` value.
-- `local/` is ignored via `.gitignore`, so your real key will not get committed.
+- `index.html` calls `/api/weather?city=...`.
+- `api/weather.js` reads `process.env.WEATHER_API_KEY` server-side and calls OpenWeatherMap.
+- The browser never receives or stores your OpenWeather API key.
 
 ### For future projects
 
 Follow the same pattern:
-- Keep secrets in a local file that is ignored by git.
+- Keep secrets in environment variables that are only read on the server.
 - Commit a `*.example.js` (or `.env.example`) file with placeholders.
 - Add a `.gitignore` entry for your local config files (e.g., `local/`, `config.js`, `.env`).
 
-> 🔒 If you need to keep API keys truly secret in a deployed app, you'll need a backend (server-side) proxy to keep the key off the client entirely.
+> 🔒 In a browser-only static app, API keys are always exposed. Use a server-side proxy like `api/weather.js` to keep them private.
