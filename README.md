@@ -30,6 +30,22 @@ node server.js
 - `api/weather.js` reads `process.env.WEATHER_API_KEY` server-side and calls OpenWeatherMap.
 - The browser never receives or stores your OpenWeather API key.
 
+## Deploy On Vercel
+
+1. Push your latest code to GitHub.
+2. Import the repo in Vercel.
+3. In Vercel Project Settings -> Environment Variables, add:
+
+```bash
+WEATHER_API_KEY=YOUR_API_KEY_HERE
+```
+
+4. Redeploy the project.
+
+After deployment:
+- Frontend is served from `index.html`.
+- Backend route is available at `/api/weather`.
+
 ### For future projects
 
 Follow the same pattern:

@@ -6,3 +6,4 @@ local/
 # Ignore all environment files
 .env
 .env.local
+.vercel
